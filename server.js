@@ -13,13 +13,15 @@ const infoprefix = "{INFO}";
 const reqprefix = "{REQUEST}";
 const errprefix = "{ERROR}";
 const infopg = "srvinfo";
-const ver = "Dev 0.1.0";
+const ver = "Dev 0.1.1";
 
 // run server
 http.createServer(function (req, res) {
   //router
-  if (req.url.endsWith("/")) {
-    var file = "views/"+ req.url + home +".html"
+  var url = req.url.split("?")[0];
+  console.log(url)
+  if (url.endsWith("/")) {
+    var file = "views/"+ url + home +".html"
     if (fs.existsSync(file)) {
     console.log(infoprefix + "Rendering home page")
     }else{
@@ -27,7 +29,7 @@ http.createServer(function (req, res) {
        file = "views/404.html"
     }
   }
-  else if (req.url == "/" + infopg) {
+  else if (url == "/" + infopg) {
     console.log(infoprefix + "Rendering info page")
     res.write("<title>Server Info</title>")
     res.write("<h1>Cato Web Server" + ver + "</h1>");
@@ -40,8 +42,8 @@ http.createServer(function (req, res) {
     res.write("<a href='/'>Index page</a>")
     return res.end();
   }
-  else if (!req.url.includes('.')) {
-    var file = "views"+req.url+".html"
+  else if (!url.includes('.')) {
+    var file = "views"+url+".html"
       if (fs.existsSync(file)) {
         console.log(infoprefix + "Rendering " + file)
       }
@@ -51,7 +53,7 @@ http.createServer(function (req, res) {
      }
   }
   else{
-    var file = "./assets"+req.url
+    var file = "./assets"+url
     if (fs.existsSync(file)) {
       console.log(infoprefix + "| " + file + ' | is a valid file')
     }
@@ -67,7 +69,7 @@ http.createServer(function (req, res) {
   res.write(data);
   return res.end();
   });
-  console.log(reqprefix + req.url)
+  console.log(reqprefix + url)
 
 }).listen(port);   
 console.log(infoprefix + "Server ready on port:" + port)
